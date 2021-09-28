@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from 'axios';
+const SERVER = process.env.REACT_APP_SERVER;
 
 class BestBooks extends React.Component {
   constructor(props) {
@@ -9,6 +11,37 @@ class BestBooks extends React.Component {
   }
 
   /* TODO: Make a GET request to your API to fetch books for the logged in user  */
+  componentDidMount() {
+    this.fetchBooks();
+  }
+
+  async fetchBooks(email = null){
+    let apiURL = `${process.env.REACT_APP_SERVER}/books`;
+
+    console.log(apiURL);
+
+    if(email){
+      apiURL += `?email=${email}`
+    }
+
+    try{
+      const response = await axios.get(apiURL);
+
+        console.log(response.data)
+
+      this.setState({books: response.data});
+    
+    }catch(error){
+      console.log(error);
+    }
+  }
+
+  handleEmailSubmit = (event) => {
+    event.preventDefault();
+    const email = event.target.email.value;
+    console.log({email});
+    this.fetchBooks(email);
+  }
 
   render() {
 
